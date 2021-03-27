@@ -26,15 +26,7 @@ pipeline {
                 
            }
         }
-        stage('Review Plan') {
-          steps {
-              script {
-                  timeout(time:10, unit:'MINUTES') {
-                      input(id: "Apply Changes", message: "Plan okay to apply?", ok: 'Apply Configuration Changes')
-                  }
-              }
-          }
-      }
+        
         stage('apply') {
             steps {
                 ansiColor('xterm') {
