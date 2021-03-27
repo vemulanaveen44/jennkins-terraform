@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+    tools {
+        terraform 'terraform'
+    }
+    stages {
+        stage('git checkout'){
+            steps {
+                git branch: 'main', credentialsId: 'git-credit', url: 'https://github.com/vemulanaveen44/jennkins-terraform.git'
+            }
+        }
+        stage('init'){
+            steps {
+                ansiColor('xterm') {
+                     sh 'terraform init'
+                }
+                
+            }
+        }
+        stage('plan') {
+            steps {
+                ansiColor('xterm') {
+            
+                    sh 'terraform plan'
+                }
+                
+           }
+        }
+        stage('Review Plan') {
+          steps {
+              script {
+                  timeout(time:10, unit:'MINUTES') {
+                      input(id: "Apply Changes", message: "Plan okay to apply?", ok: 'Apply Configuration Changes')
+                  }
+              }
+          }
+      }
+        stage('apply') {
+            steps {
+                ansiColor('xterm') {
+                    sh 'terraform apply -auto-approve'
+                }
+                
+            }
+        }
+        
+    }
+}
